@@ -13,11 +13,8 @@ namespace PingPongDemo
             pingActor = Context.ActorOf(Props.Create(() => new PingActor(100, pongActor)), "ping-1");
 
             childrenList = Context.GetChildren().ToList();
-            foreach (var child in childrenList)
-            {
-                Context.Watch(child);
-            }
-
+            childrenList.ForEach(c => Context.Watch(c));
+           
             pingActor.Tell(PingMessage.START);
 
             Receive<Terminated>(terminated =>

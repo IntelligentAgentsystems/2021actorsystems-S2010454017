@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PingPongDemo", "PingPongDemo\PingPongDemo.csproj", "{2ADE6ABA-4753-49D9-8647-C363622E088E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PingPongDemo", "PingPongDemo\PingPongDemo.csproj", "{2ADE6ABA-4753-49D9-8647-C363622E088E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prisoners_Dilema", "Prisoners_Dilema\Prisoners_Dilema.csproj", "{CD91CF23-5C5A-48B0-8D69-1D19D673F4E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2ADE6ABA-4753-49D9-8647-C363622E088E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ADE6ABA-4753-49D9-8647-C363622E088E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2ADE6ABA-4753-49D9-8647-C363622E088E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD91CF23-5C5A-48B0-8D69-1D19D673F4E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD91CF23-5C5A-48B0-8D69-1D19D673F4E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD91CF23-5C5A-48B0-8D69-1D19D673F4E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD91CF23-5C5A-48B0-8D69-1D19D673F4E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
