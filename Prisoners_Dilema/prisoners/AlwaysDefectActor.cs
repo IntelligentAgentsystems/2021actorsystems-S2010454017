@@ -9,10 +9,13 @@ namespace Prisoners_Dilema.prisoners
         {
             Receive<PlayerMessages>(msg =>
             {
-                switch (msg)
+                switch (msg.MessageType)
                 {
-                    case PlayerMessages.REQUEST:
-                        Sender.Tell(PrisonerOptions.DEFECT);
+                    case PlayerMessages.PlayerMessagesType.NEWGAME:
+                        //nothing to do here
+                        break;
+                    case PlayerMessages.PlayerMessagesType.REQUEST:
+                        Sender.Tell(PrisonerOptions.DEFECT, Self);
                         break;
                     default:
                         break;

@@ -7,8 +7,17 @@ using System.Threading.Tasks;
 
 namespace Prisoners_Dilema.messages
 {
-    public enum PlayerMessages
+    
+    public record PlayerMessages
     {
-        REQUEST
+        public enum PlayerMessagesType
+        {
+            REQUEST,
+            NEWGAME,
+        }
+
+        public PlayerMessagesType MessageType { get; init; }
+        public IActorRef Opponent { get; init; }
     }
+
 }

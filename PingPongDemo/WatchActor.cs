@@ -19,7 +19,6 @@ namespace PingPongDemo
 
             Receive<Terminated>(terminated =>
             {
-
                 if (childrenList.Contains(terminated.ActorRef))
                 {
                     childrenList.Remove(terminated.ActorRef);
