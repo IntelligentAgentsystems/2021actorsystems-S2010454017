@@ -16,8 +16,8 @@ namespace Prisoners_Dilema.management_actors
 
         private IActorRef PlayerManagment { get; set; }
 
-        private static int ROUNDS = 100;
-        private static int TOURNAMENTS = 100;
+        private static readonly int ROUNDS = 100;
+        private static readonly int TOURNAMENTS = 100;
         private List<IActorRef>? Observers { get; set; }
         private (IActorRef, IActorRef) Players { get; set; }
         private int PassedTournaments { get; set; } = 0;
@@ -80,6 +80,9 @@ namespace Prisoners_Dilema.management_actors
                     $" YEARS: {result.Years}");
 
             }
+            var requestEndGamae = new PlayerMessages { MessageType = PlayerMessages.PlayerMessagesType.ENDGAME };
+            Players.Item1.Tell(requestEndGamae);
+            Players.Item2.Tell(requestEndGamae);
 
             if(PassedTournaments < TOURNAMENTS)
             {

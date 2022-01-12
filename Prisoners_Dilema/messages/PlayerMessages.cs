@@ -14,10 +14,15 @@ namespace Prisoners_Dilema.messages
         {
             REQUEST,
             NEWGAME,
+            ENDGAME,
+            GETHISTORY,
+            HISTORY
         }
 
         public PlayerMessagesType MessageType { get; init; }
-        public IActorRef Opponent { get; init; }
+        public IActorRef? Opponent { get; set; }
+        public IDictionary<IActorRef,IList<Result>>? History { get; set; }
+
     }
 
 }

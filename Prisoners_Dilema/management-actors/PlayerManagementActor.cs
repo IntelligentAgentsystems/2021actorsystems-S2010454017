@@ -19,7 +19,7 @@ namespace Prisoners_Dilema.management_actors
             for (int i = 0; i < NrPerType; ++i)
             {
                 Players.Add(ActorBase.Context.ActorOf<AlwaysComplyActor>($"{nameof(AlwaysComplyActor)}_{i}"));
-                Players.Add(ActorBase.Context.ActorOf<AlwaysComplyActor>($"{nameof(AlwaysDefectActor)}_{i}"));
+                Players.Add(ActorBase.Context.ActorOf<AlwaysDefectActor>($"{nameof(AlwaysDefectActor)}_{i}"));
                 Players.Add(ActorBase.Context.ActorOf<TitForTatActor>($"{nameof(TitForTatActor)}_{i}"));
                 Players.Add(ActorBase.Context.ActorOf<PeriodicDefect>($"{nameof(PeriodicDefect)}_{i}"));
             }

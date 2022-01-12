@@ -1,47 +1,29 @@
-﻿using Akka.Actor;
-using Prisoners_Dilema.messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Prisoners_Dilema.messages;
 
 namespace Prisoners_Dilema.prisoners
 {
-    public class PeriodicDefect:ReceiveActor
+    public class PeriodicDefect : BasePrisoner
     {
-        private static readonly int defectPeriod = 10;
-        private int currentCount { get; set; } = 0;
-        public PeriodicDefect()
-        {
-            Receive<PlayerMessages>(msg =>
-            {
-                switch (msg.MessageType)
-                {
-                    case PlayerMessages.PlayerMessagesType.NEWGAME:
-                        //nothing to do here
-                        break;
-                    case PlayerMessages.PlayerMessagesType.REQUEST:
-                        if(currentCount < defectPeriod)
-                        {
-                            ++currentCount;
-                            Sender.Tell(PrisonerOptions.COMPLY, Self);
-                        }
-                        else
-                        {
-                            currentCount = 0;
-                            Sender.Tell(PrisonerOptions.DEFECT, Self);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            });
+        private readonly int defectPeriod = 10;
+        private int CurrentCount { get; set; } = 0;
 
-            Receive<Result>(msg =>
+        public PeriodicDefect():base()
+        {
+
+        }
+
+        protected override PrisonerOptions GetAnswer()
+        {
+            if (CurrentCount < defectPeriod)
             {
-                //nothing to save because "dumb" prisoner
-            });
+                ++CurrentCount;
+                return PrisonerOptions.COMPLY;
+            }
+            else
+            {
+                CurrentCount = 0;
+               return PrisonerOptions.DEFECT;
+            }
         }
     }
 }
