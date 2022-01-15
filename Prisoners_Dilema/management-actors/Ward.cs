@@ -3,7 +3,7 @@ using Prisoners_Dilema.messages;
 
 namespace Prisoners_Dilema.management_actors
 {
-    public class RefereeActor: ReceiveActor
+    public class Ward: ReceiveActor
     {
         public enum LifeCycles
         {
@@ -16,14 +16,15 @@ namespace Prisoners_Dilema.management_actors
 
         private IActorRef PlayerManagment { get; set; }
 
-        private static readonly int ROUNDS = 100;
+        private static readonly int ROUNDS = 1000;
         private static readonly int TOURNAMENTS = 100;
         private List<IActorRef>? Observers { get; set; }
         private (IActorRef, IActorRef) Players { get; set; }
-        private int PassedTournaments { get; set; } = 0;
+        private int PassedTournaments { get; set; }
 
-        public RefereeActor(IPunishmentCalculator calculator, IActorRef playerManagment)
+        public Ward(IPunishmentCalculator calculator, IActorRef playerManagment)
         {
+            PassedTournaments = 0;
             PlayerManagment = playerManagment;
             punishmentCalculator = calculator;
             Receive<PlayerManagmentMessages>(ManagmentMsgHandler);
@@ -50,8 +51,6 @@ namespace Prisoners_Dilema.management_actors
                 case PlayerManagmentMessages.MESSAGETYPE.RETURNPLAYERS:
                     Observers = msg.Observers;
                     Players = msg.Players;
-                    Players.Item1.Tell(new PlayerMessages { MessageType = PlayerMessages.PlayerMessagesType.NEWGAME, Opponent = Players.Item2 });
-                    Players.Item2.Tell(new PlayerMessages { MessageType = PlayerMessages.PlayerMessagesType.NEWGAME, Opponent = Players.Item1 });
                     Self.Tell(LifeCycles.STARTGAME);
                     break;
                 default:
@@ -61,6 +60,8 @@ namespace Prisoners_Dilema.management_actors
 
         private async Task StartGameAsync()
         {
+            Players.Item1.Tell(new PlayerMessages { MessageType = PlayerMessages.PlayerMessagesType.NEWGAME, GameId = PassedTournaments });
+            Players.Item2.Tell(new PlayerMessages { MessageType = PlayerMessages.PlayerMessagesType.NEWGAME, GameId = PassedTournaments });
             Console.WriteLine($"Tournament {PassedTournaments}");
             for (int i = 0; i < ROUNDS; i++)
             {
@@ -70,21 +71,19 @@ namespace Prisoners_Dilema.management_actors
                 var answer2 = (PrisonerOptions) await Players.Item2.Ask(request, timeout: TimeSpan.FromSeconds(2.0));
 
                 int time = punishmentCalculator.GetPunishmentInYears(answer1, answer2);
-                var result = new Result { Player1 = Players.Item1, Player2 = Players.Item2 , 
-                                          Player1Answer = answer1, Player2Answer = answer2, 
-                                          Years = time};
+                var result = new Result { GameId = PassedTournaments, Years = time};
             
                 Observers?.AsParallel().ForAll(player => player.Tell(result));
 
-                Console.WriteLine($"\t[ROUND {i}] {result.Player1.Path.Name}: {result.Player1Answer}; {result.Player2.Path.Name}: {result.Player2Answer}" +
-                    $" YEARS: {result.Years}");
+                Console.WriteLine($"\t[ROUND {i}] ({Players.Item1.Path.Name} vs. {Players.Item2.Path.Name})" +
+                    $"({answer1} vs {answer2} YEARS: {result.Years}");
 
             }
             var requestEndGamae = new PlayerMessages { MessageType = PlayerMessages.PlayerMessagesType.ENDGAME };
             Players.Item1.Tell(requestEndGamae);
             Players.Item2.Tell(requestEndGamae);
 
-            if(PassedTournaments < TOURNAMENTS)
+            if(PassedTournaments < TOURNAMENTS - 1)
             {
                 ++PassedTournaments;
                 Self.Tell(LifeCycles.NEWGAME);

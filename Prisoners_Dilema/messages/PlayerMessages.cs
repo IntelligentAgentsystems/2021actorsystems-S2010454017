@@ -20,8 +20,8 @@ namespace Prisoners_Dilema.messages
         }
 
         public PlayerMessagesType MessageType { get; init; }
-        public IActorRef? Opponent { get; set; }
-        public IDictionary<IActorRef,IList<Result>>? History { get; set; }
+        public int GameId { get; set;}
+        public IDictionary<int,IList<int>>? History { get; set; }
 
     }
 

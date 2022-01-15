@@ -10,9 +10,9 @@ namespace Prisoners_Dilema
         {
             using ActorSystem system = ActorSystem.Create("system");
             var playerManagment = system.ActorOf<PlayerManagementActor>($"{nameof(PlayerManagementActor)}-1");
-            var referee = system.ActorOf(Props.Create(() => new RefereeActor(calculator, playerManagment)), $"{nameof(RefereeActor)}-1");
+            var referee = system.ActorOf(Props.Create(() => new Ward(calculator, playerManagment)), $"{nameof(Ward)}-1");
 
-            referee.Tell(RefereeActor.LifeCycles.NEWGAME);
+            referee.Tell(Ward.LifeCycles.NEWGAME);
 
             await system.WhenTerminated;
         }

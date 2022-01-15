@@ -7,43 +7,38 @@ namespace Prisoners_Dilema.prisoners
 {
     public abstract class BasePrisoner : ReceiveActor
     {
-        protected IDictionary<IActorRef, IList<Result>> History { get; set; }
-        protected IActorRef? Opponent { get; set; }
+        protected IDictionary<int, IList<int>> History { get; set; }
+        protected PrisonerOptions LastChoice { get; set; }
+
+        protected int GameId { get; set; }
+
+        protected readonly IPunishmentCalculator calculator;
         protected bool FirstMove { get; set; }
         protected bool ActivePlayer { get; set; }
 
         public BasePrisoner()
         {
+            calculator = new PunsimentCalculator();
             ActivePlayer = false;
-            History = new Dictionary<IActorRef, IList<Result>>();
+            LastChoice = PrisonerOptions.COMPLY;
+            History = new Dictionary<int, IList<int>>();
             Receive<PlayerMessages>(PlayerMessageHandler);
             Receive<Result>(ResultMessageHandler);
         }
 
         private void ResultMessageHandler(Result msg)
         {
-            if (!History.ContainsKey(msg.Player1))
+            if (History.ContainsKey(msg.GameId))
             {
-                History.Add(msg.Player1, new List<Result> { msg });
+                History[msg.GameId].Add(msg.Years);
             }
             else
             {
-                History[msg.Player1].Add(msg);
+                History.Add(msg.GameId, new List<int> { msg.Years });
             }
 
-            if (!History.ContainsKey(msg.Player2))
-            {
-                History.Add(msg.Player2, new List<Result> { msg });
-            }
-            else
-            {
-                History[msg.Player2].Add(msg);
-            }
-            if (ActivePlayer)
-            {
-                OnResult(msg);
-            }
-          
+            OnResult(msg);
+
         }
 
         private void PlayerMessageHandler(PlayerMessages msg)
@@ -51,16 +46,19 @@ namespace Prisoners_Dilema.prisoners
             switch (msg.MessageType)
             {
                 case MessageTypes.NEWGAME:
-                    Opponent = msg.Opponent;
                     FirstMove = true;
                     ActivePlayer = true;
+                    GameId = msg.GameId;
+                    GameStarted();
                     break;
                 case MessageTypes.ENDGAME:
                     ActivePlayer = false;
+                    GameEnded();
                     break;
                 case MessageTypes.REQUEST:
                     PrisonerOptions response = GetAnswer();
                     FirstMove = false;
+                    LastChoice = response;
                     Sender.Tell(response);
                     break;
                 case MessageTypes.GETHISTORY:
@@ -72,20 +70,10 @@ namespace Prisoners_Dilema.prisoners
             }
         }
 
-        /// <summary>
-        /// Method to calculate if the prisoner comply or defect.
-        /// </summary>
-        /// <returns></returns>
-        protected abstract PrisonerOptions GetAnswer();
 
-        /// <summary>
-        /// Provides Access to the last Result received, if the player participate 
-        /// in the current game and is not an observer.
-        /// </summary>
-        /// <param name="result">The result for the last answer given</param>
-        protected virtual void OnResult(Result result)
-        {
-            return;
-        }
+        protected abstract PrisonerOptions GetAnswer();
+        protected virtual void OnResult(Result result) { }
+        protected virtual void GameEnded() { }
+        protected virtual void GameStarted() { }
     }
 }

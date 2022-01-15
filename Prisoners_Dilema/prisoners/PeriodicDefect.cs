@@ -5,11 +5,11 @@ namespace Prisoners_Dilema.prisoners
     public class PeriodicDefect : BasePrisoner
     {
         private readonly int defectPeriod = 10;
-        private int CurrentCount { get; set; } = 0;
+        private int CurrentCount { get; set; }
 
         public PeriodicDefect():base()
         {
-
+            CurrentCount = 0;
         }
 
         protected override PrisonerOptions GetAnswer()
@@ -24,6 +24,11 @@ namespace Prisoners_Dilema.prisoners
                 CurrentCount = 0;
                return PrisonerOptions.DEFECT;
             }
+        }
+
+        protected override void GameStarted()
+        {
+            CurrentCount = 0;
         }
     }
 }

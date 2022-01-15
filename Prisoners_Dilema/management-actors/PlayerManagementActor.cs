@@ -7,24 +7,23 @@ namespace Prisoners_Dilema.management_actors
 {
     public class PlayerManagementActor : ReceiveActor
     {
-        private static readonly int NrPerType = 3;
         private static readonly Random RNG = new Random();
         private List<IActorRef> Players { get; set; }
 
         public PlayerManagementActor()
         {
-            Players = new List<IActorRef>();
-            //spawn and add prisoners
-
-            for (int i = 0; i < NrPerType; ++i)
+            Players = new List<IActorRef>
             {
-                Players.Add(ActorBase.Context.ActorOf<AlwaysComplyActor>($"{nameof(AlwaysComplyActor)}_{i}"));
-                Players.Add(ActorBase.Context.ActorOf<AlwaysDefectActor>($"{nameof(AlwaysDefectActor)}_{i}"));
-                Players.Add(ActorBase.Context.ActorOf<TitForTatActor>($"{nameof(TitForTatActor)}_{i}"));
-                Players.Add(ActorBase.Context.ActorOf<PeriodicDefect>($"{nameof(PeriodicDefect)}_{i}"));
-            }
+                //spawn and add prisoners
+                ActorBase.Context.ActorOf<AlwaysComplyActor>($"{nameof(AlwaysComplyActor)}"),
+                ActorBase.Context.ActorOf<AlwaysDefectActor>($"{nameof(AlwaysDefectActor)}"),
+                ActorBase.Context.ActorOf<TitForTatActor>($"{nameof(TitForTatActor)}"),
+                ActorBase.Context.ActorOf<PeriodicDefect>($"{nameof(PeriodicDefect)}"),
+                ActorBase.Context.ActorOf<LocalHistoryLearningActor>($"{nameof(LocalHistoryLearningActor)}"),
+                ActorBase.Context.ActorOf<StatisticLearningActor>($"{nameof(StatisticLearningActor)}")
+            };
 
-            //TODO SUPERVISING
+            //TODO: Prisoner died => restart prisoner with history of other actors
 
             Receive<PlayerManagmentMessages>(HandleManagementMsg);
         }
@@ -34,10 +33,15 @@ namespace Prisoners_Dilema.management_actors
             switch (msg.Message)
             {
                 case PlayerManagmentMessages.MESSAGETYPE.GETPLAYERS:
+                    
+                    //TODO jeder-gegen-jeden               
                     var selected = (Players[RNG.Next(0, Players.Count)], Players[RNG.Next(0, Players.Count)]);
-                    var answer = new PlayerManagmentMessages { Message = PlayerManagmentMessages.MESSAGETYPE.RETURNPLAYERS, 
-                                                               Players = selected,
-                                                               Observers = Players};
+                    var answer = new PlayerManagmentMessages
+                    {
+                        Message = PlayerManagmentMessages.MESSAGETYPE.RETURNPLAYERS,
+                        Players = selected,
+                        Observers = Players
+                    };
                     Sender.Tell(answer);
                     break;
                 case PlayerManagmentMessages.MESSAGETYPE.RETURNPLAYERS:
