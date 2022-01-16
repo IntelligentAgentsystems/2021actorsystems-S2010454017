@@ -24,6 +24,7 @@ namespace Prisoners_Dilema.prisoners
             History = new Dictionary<int, IList<int>>();
             Receive<PlayerMessages>(PlayerMessageHandler);
             Receive<Result>(ResultMessageHandler);
+            Receive<IDictionary<int, IList<int>>>(msg => History = msg);
         }
 
         private void ResultMessageHandler(Result msg)
@@ -61,15 +62,19 @@ namespace Prisoners_Dilema.prisoners
                     LastChoice = response;
                     Sender.Tell(response);
                     break;
-                case MessageTypes.GETHISTORY:
-                    var repsonse = new PlayerMessages { MessageType = MessageTypes.HISTORY, History = History };
-                    Sender.Tell(repsonse);
-                    break;
+
                 default:
                     break;
             }
         }
 
+        protected override void PostRestart(Exception reason)
+        {
+            Console.Error.WriteLine($"{Self.Path.Name} POSTRESTART!");
+            var request = new PlayerMessages { MessageType = MessageTypes.GETHISTORY, History = History };
+            Context.Parent.Tell(request);
+            base.PostRestart(reason);
+        }
 
         protected abstract PrisonerOptions GetAnswer();
         protected virtual void OnResult(Result result) { }

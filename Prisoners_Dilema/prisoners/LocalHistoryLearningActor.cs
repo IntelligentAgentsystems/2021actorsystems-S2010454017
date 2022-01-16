@@ -12,7 +12,7 @@ namespace Prisoners_Dilema.prisoners
 
         public int period { get; private set; }
 
-        private Random random;
+        private readonly Random random;
         private readonly int LearnRounds;
         private int currentRound;
 
@@ -29,6 +29,7 @@ namespace Prisoners_Dilema.prisoners
             ++currentRound;
             if (currentRound < LearnRounds)
             {
+                // random behavoiur to get a idee of opponent
                 return random.NextDouble() > 0.5? PrisonerOptions.COMPLY: PrisonerOptions.DEFECT;
             }
 
@@ -67,7 +68,7 @@ namespace Prisoners_Dilema.prisoners
             }
 
             //in all other cases
-            return PrisonerOptions.COMPLY;
+            return PrisonerOptions.DEFECT;
         }
 
         protected override void OnResult(Result result)
