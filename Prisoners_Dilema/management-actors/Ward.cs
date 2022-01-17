@@ -15,6 +15,7 @@ namespace Prisoners_Dilema.management_actors
         private readonly IPunishmentCalculator punishmentCalculator;
         private static readonly int ROUNDS = 1000;
         private static int lastRound;
+        private static int retryCount;
         private IActorRef PlayerManagment { get; set; }
         private (IActorRef, IActorRef) Players { get; set; }
         private int PassedTournaments { get; set; }
@@ -23,6 +24,7 @@ namespace Prisoners_Dilema.management_actors
         {
             PassedTournaments = 0;
             lastRound = 0;
+            retryCount = 0;
             PlayerManagment = playerManagment;
             punishmentCalculator = calculator;
             Receive<PlayerManagmentMessages>(ManagmentMsgHandler);
@@ -85,12 +87,23 @@ namespace Prisoners_Dilema.management_actors
                 lastRound = 0;
 
                 ++PassedTournaments;
+                retryCount = 0;
                 Self.Tell(LifeCycles.NEWGAME);
             }
             catch (AskTimeoutException)
             {
-                await Task.Delay(2000);
-                Self.Tell(LifeCycles.NEWGAME);
+                if (retryCount < 3)
+                {
+                    ++retryCount;
+                    await Task.Delay(1000);
+                    Self.Tell(LifeCycles.NEWGAME);
+                }
+                else
+                {
+                    retryCount = 0;
+                    ++PassedTournaments;
+                    Self.Tell(LifeCycles.NEWGAME);
+                }
             }
            
         }
