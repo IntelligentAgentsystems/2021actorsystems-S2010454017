@@ -9,8 +9,8 @@ namespace Prisoners_Dilema
         public static async Task Main(string[] args)
         {
             using ActorSystem system = ActorSystem.Create("system");
-            var playerManagment = system.ActorOf<PlayerManagementActor>($"{nameof(PlayerManagementActor)}-1");
-            var referee = system.ActorOf(Props.Create(() => new Ward(calculator, playerManagment)), $"{nameof(Ward)}-1");
+            var playerManagment = system.ActorOf<PlayerManagementActor>($"{nameof(PlayerManagementActor)}");
+            var referee = system.ActorOf(Props.Create(() => new Ward(calculator, playerManagment)), $"{nameof(Ward)}");
 
             referee.Tell(Ward.LifeCycles.NEWGAME);
 

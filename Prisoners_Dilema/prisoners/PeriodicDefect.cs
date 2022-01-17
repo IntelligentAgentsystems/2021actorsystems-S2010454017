@@ -4,11 +4,12 @@ namespace Prisoners_Dilema.prisoners
 {
     public class PeriodicDefect : BasePrisoner
     {
-        private readonly int defectPeriod = 10;
+        private readonly int defectPeriod;
         private int CurrentCount { get; set; }
 
-        public PeriodicDefect():base()
+        public PeriodicDefect(int period = 10):base()
         {
+            defectPeriod = period;
             CurrentCount = 0;
         }
 

@@ -72,8 +72,10 @@ namespace Prisoners_Dilema.management_actors
                     int time = punishmentCalculator.GetPunishmentInYears(answer1, answer2);
                     var result = new Result { GameId = PassedTournaments, Years = time };
 
+                    Context.ActorSelection($"{nameof(PlayerManagementActor)}").Tell(result);
+
                     ++lastRound;
-                    Console.WriteLine($"\t[ROUND {i}] ({Players.Item1.Path.Name} vs. {Players.Item2.Path.Name})" +
+                    Console.WriteLine($"\t[ROUND {lastRound}] ({Players.Item1.Path.Name} vs. {Players.Item2.Path.Name})" +
                         $"({answer1} vs {answer2} YEARS: {result.Years}");
 
                 }

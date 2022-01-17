@@ -22,7 +22,7 @@ namespace Prisoners_Dilema.management_actors
                 ActorBase.Context.ActorOf<AlwaysComplyActor>($"{nameof(AlwaysComplyActor)}"),
                 ActorBase.Context.ActorOf<AlwaysDefectActor>($"{nameof(AlwaysDefectActor)}"),
                 ActorBase.Context.ActorOf<TitForTatActor>($"{nameof(TitForTatActor)}"),
-                ActorBase.Context.ActorOf<PeriodicDefect>($"{nameof(PeriodicDefect)}"),
+                ActorBase.Context.ActorOf(Props.Create(() => new PeriodicDefect(10)),$"{nameof(PeriodicDefect)}"),
                 ActorBase.Context.ActorOf<LocalHistoryLearningActor>($"{nameof(LocalHistoryLearningActor)}"),
                 ActorBase.Context.ActorOf<StatisticLearningActor>($"{nameof(StatisticLearningActor)}")
             };
@@ -83,7 +83,7 @@ namespace Prisoners_Dilema.management_actors
                 maxNrOfRetries: 10,
                 withinTimeRange: TimeSpan.FromMinutes(1),
                 localOnlyDecider: ex => Directive.Restart
-               );
+            );
         }
     }
 
