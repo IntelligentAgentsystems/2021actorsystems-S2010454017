@@ -57,12 +57,16 @@ namespace Prisoners_Dilema.prisoners
                     GameEnded();
                     break;
                 case MessageTypes.REQUEST:
-                    PrisonerOptions response = GetAnswer();
+                    PrisonerOptions answer = GetAnswer();
                     FirstMove = false;
-                    LastChoice = response;
-                    Sender.Tell(response);
+                    LastChoice = answer;
+                    Sender.Tell(answer);
                     break;
 
+                case MessageTypes.GETHISTORY:
+                    var response = new PlayerMessages { MessageType = MessageTypes.HISTORY, History = this.History };
+                    Sender.Tell(response);
+                    break;
                 default:
                     break;
             }

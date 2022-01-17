@@ -7,7 +7,7 @@ namespace Prisoners_Dilema.management_actors
 {
     public class PlayerManagementActor : ReceiveActor
     {
-        private static readonly Random RNG = new Random();
+        private static readonly Random RNG = new();
 
         private List<IActorRef> Players { get; set; }
         private List<(IActorRef, IActorRef)> Games { get; set; }
