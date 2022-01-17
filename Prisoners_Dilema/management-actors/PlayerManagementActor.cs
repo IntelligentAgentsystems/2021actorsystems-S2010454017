@@ -8,14 +8,14 @@ namespace Prisoners_Dilema.management_actors
     public class PlayerManagementActor : ReceiveActor
     {
         private static readonly Random RNG = new Random();
-        private static int idxFirstPlayer;
-        private static int idxSecondPlayer;
+
         private List<IActorRef> Players { get; set; }
+        private List<(IActorRef, IActorRef)> Games { get; set; }
+        private static int currentGame;
 
         public PlayerManagementActor()
-        {
-            idxFirstPlayer = 0;
-            idxSecondPlayer = 1;
+        { 
+            currentGame = 0;
             Players = new List<IActorRef>
             {
                 //spawn and add prisoners
@@ -26,6 +26,7 @@ namespace Prisoners_Dilema.management_actors
                 ActorBase.Context.ActorOf<LocalHistoryLearningActor>($"{nameof(LocalHistoryLearningActor)}"),
                 ActorBase.Context.ActorOf<StatisticLearningActor>($"{nameof(StatisticLearningActor)}")
             };
+            Games = CreateGames();
             ReceiveAsync<PlayerManagmentMessages>(HandleManagementMsgAsync);
             Receive<Result>(HandleResultMsg);
         }
@@ -41,8 +42,8 @@ namespace Prisoners_Dilema.management_actors
             {
                 case PlayerManagmentMessages.MESSAGETYPE.GETPLAYERS:
 
-                    //TODO jeder-gegen-jeden               
-                    var selected = (Players[RNG.Next(0, Players.Count)], Players[RNG.Next(0, Players.Count)]);
+                    var selected = currentGame < Games.Count ? Games[currentGame]: Games[RNG.Next(0, Games.Count)];
+                    ++currentGame;
                     var answer = new PlayerManagmentMessages
                     {
                         Message = PlayerManagmentMessages.MESSAGETYPE.RETURNPLAYERS,
@@ -52,7 +53,7 @@ namespace Prisoners_Dilema.management_actors
                     break;
                 case PlayerManagmentMessages.MESSAGETYPE.GETHISTORY:
                     var answers = new List<Task<PlayerMessages>>();
-                    Players.AsParallel().ForAll(p =>
+                    Players.ForEach(p =>
                     {
                         var request = new PlayerMessages { MessageType = PlayerMessages.PlayerMessagesType.GETHISTORY };
                         var t = p.Ask<PlayerMessages>(request);
@@ -66,12 +67,22 @@ namespace Prisoners_Dilema.management_actors
                     break;
             }
         }
+
+        private List<(IActorRef, IActorRef)> CreateGames()
+        {
+            var combinations = from p1 in Players
+                               from p2 in Players
+                               where p1 != p2
+                               select (p1, p2);
+            return combinations.ToList();
+        }
+
         protected override SupervisorStrategy SupervisorStrategy()
         {
             return new OneForOneStrategy(
                 maxNrOfRetries: 10,
                 withinTimeRange: TimeSpan.FromMinutes(1),
-               localOnlyDecider: ex => Directive.Restart
+                localOnlyDecider: ex => Directive.Restart
                );
         }
     }

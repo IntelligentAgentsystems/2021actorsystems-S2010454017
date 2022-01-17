@@ -13,17 +13,16 @@ namespace Prisoners_Dilema.management_actors
         }
 
         private readonly IPunishmentCalculator punishmentCalculator;
-
-        private IActorRef PlayerManagment { get; set; }
-
         private static readonly int ROUNDS = 1000;
-        private List<IActorRef>? Observers { get; set; }
+        private static int lastRound;
+        private IActorRef PlayerManagment { get; set; }
         private (IActorRef, IActorRef) Players { get; set; }
         private int PassedTournaments { get; set; }
 
         public Ward(IPunishmentCalculator calculator, IActorRef playerManagment)
         {
             PassedTournaments = 0;
+            lastRound = 0;
             PlayerManagment = playerManagment;
             punishmentCalculator = calculator;
             Receive<PlayerManagmentMessages>(ManagmentMsgHandler);
@@ -63,7 +62,7 @@ namespace Prisoners_Dilema.management_actors
                 Players.Item1.Tell(new PlayerMessages { MessageType = PlayerMessages.PlayerMessagesType.NEWGAME, GameId = PassedTournaments });
                 Players.Item2.Tell(new PlayerMessages { MessageType = PlayerMessages.PlayerMessagesType.NEWGAME, GameId = PassedTournaments });
                 Console.WriteLine($"Tournament {PassedTournaments}");
-                for (int i = 0; i < ROUNDS; i++)
+                while (lastRound < ROUNDS)
                 {
                     var request = new PlayerMessages { MessageType = PlayerMessages.PlayerMessagesType.REQUEST };
 
@@ -73,6 +72,7 @@ namespace Prisoners_Dilema.management_actors
                     int time = punishmentCalculator.GetPunishmentInYears(answer1, answer2);
                     var result = new Result { GameId = PassedTournaments, Years = time };
 
+                    ++lastRound;
                     Console.WriteLine($"\t[ROUND {i}] ({Players.Item1.Path.Name} vs. {Players.Item2.Path.Name})" +
                         $"({answer1} vs {answer2} YEARS: {result.Years}");
 
@@ -80,14 +80,14 @@ namespace Prisoners_Dilema.management_actors
                 var requestEndGamae = new PlayerMessages { MessageType = PlayerMessages.PlayerMessagesType.ENDGAME };
                 Players.Item1.Tell(requestEndGamae);
                 Players.Item2.Tell(requestEndGamae);
-
+                lastRound = 0;
 
                 ++PassedTournaments;
                 Self.Tell(LifeCycles.NEWGAME);
             }
-            catch (AskTimeoutException e)
+            catch (AskTimeoutException)
             {
-                ++PassedTournaments;
+                await Task.Delay(2000);
                 Self.Tell(LifeCycles.NEWGAME);
             }
            
