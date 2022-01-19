@@ -1,6 +1,9 @@
 # 2021actorsystems-S2010454017
 Focus: Intelligence
 
+## System Architecture
+![System Architecture](./images/System_Architecture.png)
+
 ## Sequence Diagram Tournaments
 ![New Tournament Sequence Diagram](./images/NewTournament.png)
 
