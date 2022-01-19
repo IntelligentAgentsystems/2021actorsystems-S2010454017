@@ -1,0 +1,27 @@
+﻿@using PrisonersDilema.messages
+@model GetStatistic
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div>
+    @if (Model?.RoundPlayed != default)
+    {
+        <strong>Round Played @Model?.RoundPlayed</strong>
+    }
+</div>
+
+
+@if (Model?.AvgPerPrisoner != null)
+{
+    @foreach (var item in Model?.AvgPerPrisoner)
+    {
+     <p>
+        <strong>@item.Key.Path.Name</strong> <code>@item.Value years</code>
+    </p>   
+    }
+}

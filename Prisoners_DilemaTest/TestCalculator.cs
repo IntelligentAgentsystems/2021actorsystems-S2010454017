@@ -1,5 +1,5 @@
-﻿using Prisoners_Dilema;
-using Prisoners_Dilema.messages;
+﻿using PrisonersDilema;
+using PrisonersDilema.messages;
 using Xunit;
 using Xunit.Sdk;
 

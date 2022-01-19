@@ -1,7 +1,7 @@
 using Akka.Actor;
 using Akka.TestKit.Xunit;
-using Prisoners_Dilema.messages;
-using Prisoners_Dilema.prisoners;
+using PrisonersDilema.messages;
+using PrisonersDilema.prisoners;
 using Xunit;
 
 namespace Prisoners_DilemaTest
