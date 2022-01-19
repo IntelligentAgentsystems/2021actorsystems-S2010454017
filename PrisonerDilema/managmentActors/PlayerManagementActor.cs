@@ -24,7 +24,8 @@ namespace PrisonersDilema.managementActors
                 ActorBase.Context.ActorOf<TitForTatActor>($"{nameof(TitForTatActor)}"),
                 ActorBase.Context.ActorOf(Props.Create(() => new PeriodicDefect(10)),$"{nameof(PeriodicDefect)}"),
                 ActorBase.Context.ActorOf<LocalHistoryLearningActor>($"{nameof(LocalHistoryLearningActor)}"),
-                ActorBase.Context.ActorOf<StatisticLearningActor>($"{nameof(StatisticLearningActor)}")
+                ActorBase.Context.ActorOf<StatisticLearningActor>($"{nameof(StatisticLearningActor)}"),
+                ActorBase.Context.ActorOf<RandomActor>($"{nameof(RandomActor)}")
             };
             Games = CreateGames();
             ReceiveAsync<PlayerManagmentMessages>(HandleManagementMsgAsync);

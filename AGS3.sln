@@ -7,7 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PingPongDemo", "PingPongDem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prisoners_DilemaTest", "Prisoners_DilemaTest\Prisoners_DilemaTest.csproj", "{66742398-7FC3-485F-8D53-4C6E58CA7317}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrisonerDilema", "PrisonerDilema\PrisonerDilema.csproj", "{8FB12F37-823E-44A7-9FC4-CB566B4E0220}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrisonerDilema", "PrisonerDilema\PrisonerDilema.csproj", "{8FB12F37-823E-44A7-9FC4-CB566B4E0220}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{7F7D6E98-9787-4A5E-81DF-CE2712AC3325}"
+	ProjectSection(SolutionItems) = preProject
+		E:\Downloads\NewTournament.png = E:\Downloads\NewTournament.png
+		E:\Downloads\PrisonerRestart.png = E:\Downloads\PrisonerRestart.png
+		E:\Bilder\Result_Average_Years.png = E:\Bilder\Result_Average_Years.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
