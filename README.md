@@ -1,4 +1,4 @@
-# 2021actorsystems-S2010454017
+# S2010454017 - Prisoners Dilemma
 Focus: Intelligence
 
 # Prisoners
