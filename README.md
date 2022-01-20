@@ -1,6 +1,8 @@
 # S2010454017 - Prisoners Dilemma
 Focus: Intelligence
 
+There is also a little bit of Resilience (Prisoners geht restarted and get global history; No answer from Prisoners in allocated time -> Game waits a second and restarts from the current round. The game does this up to 3 times before stopping the game and starting a new one)
+
 # Prisoners
 - AlwaysComply
 - AlwaysDefect
